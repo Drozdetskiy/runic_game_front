@@ -21,6 +21,7 @@ export default {
     bot_power: Number,
     left_power: Number,
     right_power: Number,
+    card_index: Number,
   },
   data () {
       return {
@@ -39,9 +40,16 @@ export default {
       },
       mouseClick () {
           this.isChoose = !this.isChoose
-          this.$emit('choose', this)
+          this.$emit('choose', this, this.card_index)
           }
-      }
+      },
+    mounted () {
+        this.$root.$on('remove', (() => {
+            console.log(this.isActive)
+            this.isActive = false
+            this.isChoose = false
+        }))
+    }
 }
 </script>
 
@@ -127,13 +135,13 @@ export default {
 .card-power-left-player {
     text-align: right;
     top		: 20px;
-    right	: 0px;    
+    right	: 20px;    
 }
 
 .card-power-right-player {
     text-align: right;
     top		: 20px;
-    right	: 20px;    
+    right	: 0px;    
 }
 
 .card-power-top-player.choose,

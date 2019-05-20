@@ -1,16 +1,14 @@
 <template>
-<div class="card flip" @click="mouseClick">
-    <div class="enemy-face">
+<div class="card flip">
+    <div class="face player">
         <img src="../assets/vue.svg" alt="enemy_card">
-        <!-- <h2><span class="card-power-top-player">9</span></h2> -->
         <h2><span class="card-power-top-player" v-bind:class="{choose: isActive}">{{ top_power }}</span></h2>
             <h2><span class="card-power-bottom-player" v-bind:class="{choose: isActive}">{{ bot_power }}</span></h2>
             <h2><span class="card-power-left-player" v-bind:class="{choose: isActive}">{{ left_power }}</span></h2>
             <h2><span class="card-power-right-player" v-bind:class="{choose: isActive}">{{ right_power }}</span></h2>
     </div>
-    <div class="player-face">
-        <img src="../assets/ember.svg" alt="enemy_card">
-        <!-- <h2><span class="card-power-top-player">9</span></h2> -->
+    <div class="face enemy">
+        <img src="../assets/vue.svg" alt="enemy_card">
         <h2><span class="card-power-top-player" v-bind:class="{choose: isActive}">{{ top_power }}</span></h2>
             <h2><span class="card-power-bottom-player" v-bind:class="{choose: isActive}">{{ bot_power }}</span></h2>
             <h2><span class="card-power-left-player" v-bind:class="{choose: isActive}">{{ left_power }}</span></h2>
@@ -24,20 +22,22 @@
 // @ is an alias to /src
 
 export default {
-  name: 'Card',
+  name: 'PlayerCardFlip',
   props: {
     top_power: Number,
     bot_power: Number,
     left_power: Number,
-    right_power: Number
+    right_power: Number,
+    player_number: Number,
+    enemy_number: Number,
+    card_index: Number
   }
 }
 </script>
 
 <style scoped>
 
-.player-face,
-.enemy-face {
+.face {
     width: 100%;
     height: 100%;
     padding: 20px;
@@ -47,15 +47,15 @@ export default {
     backface-visibility: hidden;
 }
 
-.enemy-face {
+.face.enemy {
     border: 1px solid #ff005b;
     box-shadow: 0 0 15px #ff005b, inset 0 0 5px #ff005b;
-    transform: rotateY(180deg);
+    transform: rotateY(0deg);
 }
-.player-face {
+.face.player {
     border: 1px solid #2196F3;
     box-shadow: 0 0 15px #2196F3, inset 0 0 5px #2196F3;
-    transform: rotateY(0deg);
+    transform: rotateY(180deg);
 }
 
 .card {
@@ -67,11 +67,19 @@ export default {
     transform: scale(1);
     transform-style: preserve-3d;
     transition: transform .5s;
+    transform: rotate(180)
 }
 
 .card.flip {
-    transform: rotateY(180deg);
-    transition-delay: 0.4s;
+          animation-name: flip;
+          animation-duration: 1.4s;
+          animation-fill-mode: forwards;
+          animation-delay: 0s;
+}
+
+@keyframes flip {
+  from { -webkit-transform: rotateY(0deg); transform: rotateY(0deg); }
+  to { -webkit-transform: rotateY(180deg); transform: rotateY(180deg); }
 }
 
 .card-power-top-player,
@@ -109,12 +117,13 @@ padding: 5px;
 .card-power-left-player {
     text-align: right;
     top: 20px;
-    right: 0px;
+    right: 20px;
 }
 
 .card-power-right-player {
     text-align: right;
     top: 20px;
-    right: 20px;
+    right: 0px;
 }
+
 </style>

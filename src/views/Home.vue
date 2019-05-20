@@ -1,8 +1,18 @@
 <template>
     <div class="home" id="home">
-    <LeftSideBar :side_cards_power="side_cards_power" :side_cards_number="side_cards_number"/>
-    <GameTable :table_cards="table_cards" />
-    <RightSideBar :side_cards_power="side_cards_power" :side_cards_number="side_cards_number"/>
+    <Navbar :turn="turn" :player_number="player_number" />
+    <LeftSideBar
+    :left_side_cards_power="left_side_cards_power"
+    :left_side_cards_number="left_side_cards_number"
+    :hand_card_number="hand_card_number"
+    v-on:handChoosing="handChoosing" />
+    <GameTable
+    :table_cards="table_cards"
+    v-on:cardPlacing="cardPlacing"
+    :player_number="player_number"
+    :enemy_number="enemy_number"
+    :activities="activities" />
+    <RightSideBar :right_side_cards_power="right_side_cards_power" :right_side_cards_number="right_side_cards_number"/>
     </div>
 
 </template>
@@ -12,6 +22,8 @@
 import LeftSideBar from '@/components/LeftSideBar.vue'
 import GameTable from '@/components/GameTable.vue'
 import RightSideBar from '@/components/RightSideBar.vue'
+// import { constants } from 'crypto';
+import Navbar from '@/components/Navbar.vue'
 
 export default {
   name: 'home',
@@ -19,29 +31,51 @@ export default {
     hash_url: {
       type: String,
       default: 'def'
-    }
+    },
+    left_side_cards_number: {
+      type: Array,
+      default: [0,]
+    },
+    left_side_cards_power: {
+      type: Array,
+      default: [{'top': 0, 'bot': 0, 'left': 0, 'right': 0, 'player': 1},]
+    },
+    right_side_cards_number: {
+      type: Array,
+      default: [0,]
+    },
+    right_side_cards_power: {
+      type: Array,
+      default: [{'top': 0, 'bot': 0, 'left': 0, 'right': 0, 'player': 1},]
+    },
+    table_cards: Array,
+    turn: Number
   },
   components: {
     LeftSideBar,
     GameTable,
-    RightSideBar
+    RightSideBar,
+    Navbar
   },
   data () {
     return {
-      side_cards_number: [0, 1, 2, 3, 4],
-      side_cards_power: [ [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4] ],
-      table_cards: [
-        [0, 0, 0, 0, 0],
-        [1, 6, 7, 8, 9],
-        [1, 3, 5, 6, 7],
-        [1, 3, 5, 6, 7],
-        [2, 3, 5, 6, 7],
-        [0, 0, 0, 0, 0],
-        [2, 3, 5, 6, 7],
-        [1, 3, 5, 6, 7],
-        [0, 0, 0, 0, 0]
-      ],
-      hash_url_data: [...this.hash_url].join('')
+      hash_url_data: [...this.hash_url].join(''),
+      hand_card_number: 0,
+      table_card_queue: {
+        0: [0, 0],
+        1: [0, 1],
+        2: [0, 2],
+        3: [1, 0],
+        4: [1, 1],
+        5: [1, 2],
+        6: [2, 0],
+        7: [2, 1],
+        8: [2, 2]
+      },
+      player_number: 0,
+      enemy_number: 0,
+      player_store: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      activities: [0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
   },
   sockets: {
@@ -52,15 +86,79 @@ export default {
     },
     message (val) {
       console.log(val)
+      var json_val = JSON.parse(val)
+      this.left_side_cards_number = json_val[`card_queue_${this.player_number}`]
+      this.left_side_cards_power = json_val[`player_${this.player_number}_hand`]
+      this.right_side_cards_number = json_val[`card_queue_${this.enemy_number}`]
+      this.right_side_cards_power = json_val[`player_${this.enemy_number}_hand`]
+      this.table_cards = json_val.table
+      this.turn = json_val.turn
+      this.addActivities()
+    },
+    player_number (number) {
+      this.player_number = number
+      this.enemy_number = number == 1 ? 2 : 1
     }
   },
   methods: {
-    clickButton (val) {
-      // this.$socket is `socket.io-client` instance
-      this.$socket.emit('emit_method', val)
+    cardPlacing (card_position) {
+      if (this.hand_card_number) {
+        let[i, j] = this.table_card_queue[card_position]
+        let message = JSON.stringify(
+          {
+            'card_index': this.hand_card_number - 1,
+            'i': i,
+            'j': j,
+            'hash_url': [...this.hash_url].join('')
+          }
+        )
+        let active_player = this.turn % 2 ? 1 : 2
+        if (active_player == this.player_number) {
+          this.$root.$emit('disappear', card_position)
+          setTimeout(() => {this.$socket.emit('turn', message)}, 400)
+        }
+        this.hand_card_number = 0
+        this.$root.$emit('remove');
+      }
+    },
+    handChoosing (card_position) {
+      this.hand_card_number = card_position
+    },
+    addActivities () {
+      let indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+      let activities = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      indexes.forEach(index => {
+        if (this.player_store[index] && this.player_store[index] !== this.table_cards[index].player && this.table_cards[index]) {
+            if (this.table_cards[index].player == this.player_number) {
+              activities[index] = 3
+            }
+            else {
+              activities[index] = 4
+            }
+          }
+        else {
+          if (!this.player_store[index] && !this.table_cards[index].player) {
+            activities[index] = 0
+          }
+          if (this.table_cards[index].player == this.player_number && this.player_store[index] == this.player_number) {
+            activities[index] = 1
+          }
+          if (this.table_cards[index].player == this.enemy_number && this.player_store[index] == this.enemy_number) {
+            activities[index] = 2
+          }
+          if (!this.player_store[index] && this.table_cards[index].player == this.player_number) {
+            activities[index] = 5
+          }
+          if (!this.player_store[index] && this.table_cards[index].player == this.enemy_number) {
+            activities[index] = 6
+          }
+        }
+        this.player_store[index] = this.table_cards[index].player
+      })
+      this.activities = activities
+      console.log(activities)
     }
   }
-
 }
 </script>
 

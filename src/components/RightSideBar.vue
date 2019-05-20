@@ -1,19 +1,15 @@
 <template>
 <div class="sidebar">
       <LeftSideCard 
-      v-for="number in side_cards_number" 
-      v-on:choose="unChoose" 
+      v-for="number in right_side_cards_number"
+      v-bind:key="number" 
       :style="{top: card_top_move(number) + 'px', left: card_left_move(number) + 'px'}" 
-      :top_power="side_cards_power[number][0]" 
-      :bot_power="side_cards_power[number][1]" 
-      :left_power="side_cards_power[number][2]" 
-      :right_power="side_cards_power[number][3]" />
+      :top_power="right_side_cards_power[number].top" 
+      :bot_power="right_side_cards_power[number].bot" 
+      :left_power="right_side_cards_power[number].left" 
+      :right_power="right_side_cards_power[number].right" />
 </div>
-<!-- <LeftSideCard v-on:choose="unChoose" v-if="side_cards_exist[side_cards_number]" style="top: 0px; left: 0px; z-index: 5;" top_power=9 bot_power=8 left_power=7 right_power=6 />
-    <LeftSideCard v-on:choose="unChoose" v-if="side_cards_exist[side_cards_number]" style="top: -80px; left: -10px; z-index: 5;" top_power=9 bot_power=8 left_power=7 right_power=6 />
-    <LeftSideCard v-on:choose="unChoose" v-if="side_cards_exist[side_cards_number]" style="top: -160px; left: -20px; z-index: 5;" top_power=9 bot_power=8 left_power=7 right_power=6 />
-    <LeftSideCard v-on:choose="unChoose" v-if="side_cards_exist[side_cards_number]" style="top: -240px; left: -30px; z-index: 5;" top_power=9 bot_power=8 left_power=7 right_power=6 />
-    <LeftSideCard v-on:choose="unChoose" v-if="side_cards_exist[side_cards_number]" style="top: -320px; left: -40px; z-index: 5;" top_power=9 bot_power=8 left_power=7 right_power=6 /> -->
+
 </template>
 
 <script>
@@ -26,23 +22,10 @@ export default {
     LeftSideCard
   },
   props: {
-    side_cards_number: Array,
-    side_cards_power: Array,
-  },
- data () {
-      return {
-        data: [],
-}
+    right_side_cards_number: Array,
+    right_side_cards_power: Array,
   },
 methods: {
-  unChoose (current_elem) {
-    this.$children.forEach( (elem) => {
-      if (current_elem != elem) {
-        elem.isActive = false; elem.isChoose = false
-        }
-        }
-        )
-  },
   card_top_move (number) {
     return number * -80
   },
