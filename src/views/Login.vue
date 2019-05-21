@@ -30,7 +30,7 @@ export default {
   },
   methods: {
   login: function () {
-    this.$http.post('http://http://157.230.107.7/api/api-token-auth/', {'username': this.username, 'password': this.password}).then((resp) => {
+    this.$http.post('http://157.230.107.7/api/api-token-auth/', {'username': this.username, 'password': this.password}).then((resp) => {
       const token = resp.data.token
         localStorage.setItem('user-token', token)
       this.$router.push('/')
