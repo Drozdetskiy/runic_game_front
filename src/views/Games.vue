@@ -16,15 +16,6 @@
   </div>
 </template>
 
-// body {
-//   background-color: rgba(207, 204, 204, 0.5);
-//   background-image: linear-gradient( 45deg,#ddd 25%, transparent 25%, transparent 74%, #ddd 75%, #ddd), linear-gradient( 45deg,#ddd 25%, transparent 25%, transparent 74%, #ddd 75%, #ddd);
-//   background-size:20px 20px;
-//   background-position: 0 0, 10px 10px;
-//   height: 100%;
-//   margin: 0;
-// }
-
 <style scoped>
 
 .recent-games__container {
