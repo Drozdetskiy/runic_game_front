@@ -3,9 +3,8 @@
     <nav class="navbar-list">
       <ul>
         <li class="nav-tab">{{turn_text_culc()}}</li>
-        <li class="nav-tab">{{player_name}}</li>
+        <li class="nav-tab">Score: {{player_score}} : {{enemy_score}}</li>
         <li class="nav-tab"> Turn: {{turn}}</li>
-        <li class="nav-tab">{{enemy_name}}</li>
       </ul>
     </nav>
    </header>
@@ -16,16 +15,10 @@ export default {
   name: 'navbar',
   props: {
     turn: Number,
-    player_name: {
-      type: String,
-      default: 'RunicGameFan1'
-    },
-    enemy_name: {
-      type: String,
-      default: 'RunicGameFan2'
-    },
     turn_text: String,
-    player_number: Number
+    player_number: Number,
+    player_score: Number,
+    enemy_score: Number
   },
   methods: {
     turn_text_culc () {
@@ -38,12 +31,20 @@ export default {
         else {
           result = 'Waiting for your opponent'
         }
+        if (this.turn == 10) {
+          if (this.player_score == this.enemy_score) {
+            result = 'DRAW'
+          }
+          else if (this.player_score > this.enemy_score) {
+            result = 'YOU WIN!'
+          }
+          else {
+            result = 'YOU LOOSE'
+          }
+        }
         return result
       }
   },
-  // mounted () {
-  //   this.turn_text_culc ()
-  // }
 }
 </script>
 

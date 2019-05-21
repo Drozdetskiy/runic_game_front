@@ -1,40 +1,92 @@
 <template>
-<div class="card">
-    <div class="face player">
-        <img class="card-view" src="../assets/blue.png" alt="player_card">
-        <h2><span class="card-power-top-player" v-bind:class="{choose: isActive}">{{ top_power }}</span></h2>
-            <h2><span class="card-power-bottom-player" v-bind:class="{choose: isActive}">{{ bot_power }}</span></h2>
-            <h2><span class="card-power-left-player" v-bind:class="{choose: isActive}">{{ left_power }}</span></h2>
-            <h2><span class="card-power-right-player" v-bind:class="{choose: isActive}">{{ right_power }}</span></h2>
-    </div>
-</div>
+<div>
+<div>
+   <header class="main-navbar">
+    <nav class="navbar-list">
+      <ul>
+        <li class="nav-tab"></li>
+        <li class="nav-tab"></li>
+        <li class="nav-tab"></li>
+      </ul>
+    </nav>
+   </header>
+ </div>
 
+ <div class="sidebar">
+  <div class="face player">
+    <form class="login" @submit="new_game">
+      <button type="submit">Find game</button>
+    </form>
+    </div>
+    <div class="face player">
+    <form class="login" @submit="new_game">
+      <button type="submit">Find game</button>
+    </form>
+    </div>
+  
+   </div>
+    
+   </div>
+ 
 </template>
 
 <script>
-// @ is an alias to /src
-
 export default {
-  name: 'PlayerCard',
-  props: {
-    top_power: Number,
-    bot_power: Number,
-    left_power: Number,
-    right_power: Number,
-    player_number: Number,
-    enemy_number: Number,
-    card_index: Number,
+  name: 'index',
+  methods: {
+    new_game: function () {
+    
+    let token = localStorage.getItem('user-token')
+
+    this.$http.get('http://127.0.0.1:8000/api/new_game/', {headers: { 'Authorization': `Token ${token}`}}).then((resp) => {
+      this.$router.push(`/game/${JSON.parse(resp.data).game_hash}`)
+    }).catch(err => {
+      if (err.response.status == 401) {
+        this.$router.push('/login')
+      }
+      
+    })
   }
+}
 }
 </script>
 
+
 <style scoped>
+.main-navbar {
+  background-color: #ffffff;
+  height: 40px;
+  width: 100%;
+  position: fixed;
+  box-shadow: 1px 1px 10px rgba(0,0,0,0.5);
+}
+
+.navbar-list {
+  text-align: center;
+  padding: 10px
+}
+
+.navbar-list li{
+  display: inline;
+  padding: 20px 20px 20px 20px; 
+}
+
+.sidebar {
+  margin: 500px;
+
+    width: 300px;
+    height: 500px;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
 
 .face {
-    width: 100%;
-    height: 100%;
+    
+    width: 50%;
+    height: 50%;
     padding: 20px;
-    position: absolute;
+    position: relative;
 
     background: #333;
     backface-visibility: hidden;
@@ -115,9 +167,4 @@ padding: 5px;
     right: 0px;
 }
 
-.card-view {
-    max-width: 80%;
-    max-height: 100%;
-    padding-left: 15%;
-}
 </style>
