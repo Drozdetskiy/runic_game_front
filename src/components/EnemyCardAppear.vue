@@ -1,11 +1,11 @@
 <template>
 <div class="card appear">
     <div class="face enemy">
-        <img src="../assets/vue.svg" alt="enemy_card">
-        <h2><span class="card-power-top-player" v-bind:class="{choose: isActive}">{{ top_power }}</span></h2>
-            <h2><span class="card-power-bottom-player" v-bind:class="{choose: isActive}">{{ bot_power }}</span></h2>
-            <h2><span class="card-power-left-player" v-bind:class="{choose: isActive}">{{ left_power }}</span></h2>
-            <h2><span class="card-power-right-player" v-bind:class="{choose: isActive}">{{ right_power }}</span></h2>
+        <img class="card-view" src="../assets/red.png" alt="enemy_card">
+        <h2><span class="card-power-top-player">{{ top_power }}</span></h2>
+            <h2><span class="card-power-bottom-player">{{ bot_power }}</span></h2>
+            <h2><span class="card-power-left-player">{{ left_power }}</span></h2>
+            <h2><span class="card-power-right-player">{{ right_power }}</span></h2>
     </div>
 </div>
 
@@ -106,6 +106,10 @@ padding: 5px;
 
 .card.appear{
     animation: scaling 0.9s linear 0s;
+}
+
+.card-view {
+    max-width: 100%;
 }
 
 @keyframes scaling {

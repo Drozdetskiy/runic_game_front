@@ -1,11 +1,11 @@
 <template>
-    <div class="side-card-left" 
+    <div class="side-card-right" 
         v-bind:class="{hover: isActive, choose: isChoose}" 
         @mouseenter="mouseEnter" 
         @mouseleave="mouseLeave" 
         @click="mouseClick"
         >
-        <div class="back-face" v-bind:class="{choose: isActive}" alt="Memory Card"></div>
+        <img class="back-face" v-bind:class="{choose: isActive}" src="../assets/vue.svg" alt="Memory Card">
             <h2><span class="card-power-top-player" v-bind:class="{choose: isActive}">{{ top_power }}</span></h2>
             <h2><span class="card-power-bottom-player" v-bind:class="{choose: isActive}">{{ bot_power }}</span></h2>
             <h2><span class="card-power-left-player" v-bind:class="{choose: isActive}">{{ left_power }}</span></h2>
@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: 'SideCardLeft',
+  name: 'SideCardRight',
   props: {
     top_power: Number,
     bot_power: Number,

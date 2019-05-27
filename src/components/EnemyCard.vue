@@ -1,7 +1,7 @@
 <template>
 <div class="card">
     <div class="face enemy">
-        <img src="../assets/vue.svg" alt="enemy_card">
+        <img class="card-view" src="../assets/red.png" alt="enemy_card">
         <h2><span class="card-power-top-player" v-bind:class="{choose: isActive}">{{ top_power }}</span></h2>
             <h2><span class="card-power-bottom-player" v-bind:class="{choose: isActive}">{{ bot_power }}</span></h2>
             <h2><span class="card-power-left-player" v-bind:class="{choose: isActive}">{{ left_power }}</span></h2>
@@ -118,4 +118,7 @@ padding: 5px;
     100% { transform: scale(1); }
 }
 
+.card-view {
+    max-width: 100%;
+}
 </style>

@@ -1,14 +1,14 @@
 <template>
 <div class="card flip">
     <div class="face enemy">
-        <img src="../assets/vue.svg" alt="enemy_card">
+         <img class="card-view-enemy" src="../assets/red.png" alt="enemy_card">
         <h2><span class="card-power-top-player" v-bind:class="{choose: isActive}">{{ top_power }}</span></h2>
             <h2><span class="card-power-bottom-player" v-bind:class="{choose: isActive}">{{ bot_power }}</span></h2>
             <h2><span class="card-power-left-player" v-bind:class="{choose: isActive}">{{ left_power }}</span></h2>
             <h2><span class="card-power-right-player" v-bind:class="{choose: isActive}">{{ right_power }}</span></h2>
     </div>
     <div class="face player">
-        <img src="../assets/vue.svg" alt="enemy_card">
+        <img class="card-view-player" src="../assets/blue.png" alt="player_card">
         <h2><span class="card-power-top-player" v-bind:class="{choose: isActive}">{{ top_power }}</span></h2>
             <h2><span class="card-power-bottom-player" v-bind:class="{choose: isActive}">{{ bot_power }}</span></h2>
             <h2><span class="card-power-left-player" v-bind:class="{choose: isActive}">{{ left_power }}</span></h2>
@@ -130,4 +130,13 @@ padding: 5px;
     animation: scaling 2.4s linear 0s;
 }
 
+.card-view-enemy {
+    max-width: 100%;
+}
+
+.card-view-player {
+    max-width: 80%;
+    max-height: 100%;
+    padding-left: 15%;
+}
 </style>

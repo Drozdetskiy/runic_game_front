@@ -1,11 +1,11 @@
 <template>
 <div class="card appear">
     <div class="face player">
-        <img src="../assets/vue.svg" alt="player_card">
-        <h2><span class="card-power-top-player" v-bind:class="{choose: isActive}">{{ top_power }}</span></h2>
-            <h2><span class="card-power-bottom-player" v-bind:class="{choose: isActive}">{{ bot_power }}</span></h2>
-            <h2><span class="card-power-left-player" v-bind:class="{choose: isActive}">{{ left_power }}</span></h2>
-            <h2><span class="card-power-right-player" v-bind:class="{choose: isActive}">{{ right_power }}</span></h2>
+        <img class="card-view" src="../assets/blue.png" alt="player_card">
+        <h2><span class="card-power-top-player">{{ top_power }}</span></h2>
+            <h2><span class="card-power-bottom-player">{{ bot_power }}</span></h2>
+            <h2><span class="card-power-left-player">{{ left_power }}</span></h2>
+            <h2><span class="card-power-right-player">{{ right_power }}</span></h2>
     </div>
 </div>
 
@@ -113,5 +113,11 @@ padding: 5px;
     text-align: right;
     top: 20px;
     right: 0px;
+}
+
+.card-view {
+    max-width: 80%;
+    max-height: 100%;
+    padding-left: 15%;
 }
 </style>

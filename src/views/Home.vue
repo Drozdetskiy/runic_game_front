@@ -1,6 +1,11 @@
 <template>
     <div class="home" id="home">
-    <Navbar :turn="turn" :player_number="player_number" />
+    <Navbar 
+    :turn="turn"
+    :player_number="player_number"
+    :enemy_number="enemy_number"
+    :player_score="player_score"
+    :enemy_score="enemy_score"/>
     <LeftSideBar
     :left_side_cards_power="left_side_cards_power"
     :left_side_cards_number="left_side_cards_number"
@@ -22,16 +27,12 @@
 import LeftSideBar from '@/components/LeftSideBar.vue'
 import GameTable from '@/components/GameTable.vue'
 import RightSideBar from '@/components/RightSideBar.vue'
-// import { constants } from 'crypto';
 import Navbar from '@/components/Navbar.vue'
 
 export default {
   name: 'home',
   props: {
-    hash_url: {
-      type: String,
-      default: 'def'
-    },
+    hash_url: String,
     left_side_cards_number: {
       type: Array,
       default: [0,]
@@ -75,47 +76,60 @@ export default {
       player_number: 0,
       enemy_number: 0,
       player_store: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      activities: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      activities: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      player_score: 5,
+      enemy_score: 5
     }
   },
-  sockets: {
-    connect () {
-      this.$socket.emit(
-        'message', [...this.hash_url].join('')
-      )
-    },
-    message (val) {
-      console.log(val)
-      var json_val = JSON.parse(val)
-      this.left_side_cards_number = json_val[`card_queue_${this.player_number}`]
-      this.left_side_cards_power = json_val[`player_${this.player_number}_hand`]
-      this.right_side_cards_number = json_val[`card_queue_${this.enemy_number}`]
-      this.right_side_cards_power = json_val[`player_${this.enemy_number}_hand`]
-      this.table_cards = json_val.table
-      this.turn = json_val.turn
-      this.addActivities()
-    },
-    player_number (number) {
-      this.player_number = number
-      this.enemy_number = number == 1 ? 2 : 1
-    }
+  mounted () {
+    this.$http
+      .get(`http://165.22.109.108/api/runic_game_action/${this.hash_url_data}`)
+      .then(response => {this.get_data(response)})
   },
   methods: {
+    get_data (response) {
+          let json_val = JSON.parse(response.data)
+          this.player_number = json_val.player_number
+          this.enemy_number = json_val.bot_number
+          this.left_side_cards_number = json_val[`card_queue_${this.player_number}`]
+          this.left_side_cards_power = json_val[`player_${this.player_number}_hand`]
+          this.right_side_cards_number = json_val[`card_queue_${this.enemy_number}`]
+          this.right_side_cards_power = json_val[`player_${this.enemy_number}_hand`]
+          this.table_cards = json_val.table
+          this.turn = json_val.turn
+          this.player_score = json_val[`player_${this.player_number}_score`]
+          this.enemy_score = json_val[`player_${this.enemy_number}_score`]
+          this.addActivities()
+    },
     cardPlacing (card_position) {
       if (this.hand_card_number) {
         let[i, j] = this.table_card_queue[card_position]
-        let message = JSON.stringify(
+        let player_turn = 
           {
             'card_index': this.hand_card_number - 1,
             'i': i,
-            'j': j,
-            'hash_url': [...this.hash_url].join('')
+            'j': j
           }
-        )
+        
         let active_player = this.turn % 2 ? 1 : 2
         if (active_player == this.player_number) {
           this.$root.$emit('disappear', card_position)
-          setTimeout(() => {this.$socket.emit('turn', message)}, 400)
+          console.log(player_turn)
+          setTimeout(() => {
+            this.$http.post(`http://165.22.109.108/api/runic_game_action/${this.hash_url_data}`, {
+              'player_turn': player_turn
+            }
+            )
+            .then(
+              response => {
+                this.get_data(response)
+            }
+            )
+          }, 400)
+          setTimeout(() => {
+          this.$http.get(`http://165.22.109.108/api/runic_game_action/${this.hash_url_data}`)
+          .then(response => {this.get_data(response)})
+          }, 2000)
         }
         this.hand_card_number = 0
         this.$root.$emit('remove');
