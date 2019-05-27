@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     login: function () {
-    this.$http.post('http://157.230.107.7/api/api-token-auth/', {'username': this.username, 'password': this.password}).then((resp) => {
+    this.$http.post('http://127.0.0.1:8000/api/api-token-auth/', {'username': this.username, 'password': this.password}).then((resp) => {
       const token = resp.data.token
         localStorage.setItem('user-token', token) // store the token in localstorage
       this.$router.push('/')
@@ -40,7 +40,7 @@ export default {
     },
     register: function () {
       if (this.password == this.password2) {
-        this.$http.post('http://157.230.107.7/api/users/register', {'username': this.username, 'password': this.password}).then((resp) => {
+        this.$http.post('http://127.0.0.1:8000/api/users/register', {'username': this.username, 'password': this.password}).then((resp) => {
         this.login()
       }).catch(err => {
         console.log(err)

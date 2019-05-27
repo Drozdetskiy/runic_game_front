@@ -83,7 +83,7 @@ export default {
   },
   mounted () {
     this.$http
-      .get(`http://157.230.107.7/api/runic_game_action/${this.hash_url_data}`)
+      .get(`http://127.0.0.1:8000/api/runic_game_action/${this.hash_url_data}`)
       .then(response => {this.get_data(response)})
   },
   methods: {
@@ -116,7 +116,7 @@ export default {
           this.$root.$emit('disappear', card_position)
           console.log(player_turn)
           setTimeout(() => {
-            this.$http.post(`http://157.230.107.7/api/runic_game_action/${this.hash_url_data}`, {
+            this.$http.post(`http://127.0.0.1:8000/api/runic_game_action/${this.hash_url_data}`, {
               'player_turn': player_turn
             }
             )
@@ -127,7 +127,7 @@ export default {
             )
           }, 400)
           setTimeout(() => {
-          this.$http.get(`http://157.230.107.7/api/runic_game_action/${this.hash_url_data}`)
+          this.$http.get(`http://127.0.0.1:8000/api/runic_game_action/${this.hash_url_data}`)
           .then(response => {this.get_data(response)})
           }, 2000)
         }

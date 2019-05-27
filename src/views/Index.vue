@@ -24,7 +24,7 @@ export default {
     
     let token = localStorage.getItem('user-token')
 
-    this.$http.get('http://157.230.107.7/api/new_game/', {headers: { 'Authorization': `Token ${token}`}}).then((resp) => {
+    this.$http.get('http://127.0.0.1:8000/api/new_game/', {headers: { 'Authorization': `Token ${token}`}}).then((resp) => {
       this.$router.push(`/game/${JSON.parse(resp.data).game_hash}`)
     }).catch(err => {
       if (err.response.status == 401) {
